@@ -1,5 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/navbar/Navbar";
+import Footer from "@/components/footer/Footer";
+import Providers from "../components/theme/ThemeProvider/Providers";
+import { Toast } from "@heroui/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,9 +24,22 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
+      // data-theme="dark"
+      className={`${geistSans.variable} ${geistMono.variable}  h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+
+        <Providers>
+          <Navbar></Navbar>
+          <main>
+            {children}
+            <Toast.Provider placement="top end" />
+          </main>
+          <Footer></Footer>
+        </Providers>
+
+      </body>
     </html>
   );
 }
