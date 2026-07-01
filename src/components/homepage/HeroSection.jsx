@@ -6,6 +6,8 @@ import {
     HiOutlineMapPin,
     HiOutlineMagnifyingGlass,
 } from 'react-icons/hi2';
+import Reveal from '../motionAnimation/Reveal';
+import { RevealGroup, RevealItem } from '../motionAnimation/RevealGroup';
 
 const trendingJobs = [
     'Product Designer',
@@ -54,13 +56,15 @@ const HeroSection = () => {
 
                 <div className="mt-10 text-center">
 
-                    <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white leading-tight">
+                    <Reveal direction="up" duration={0.6}>
+                        <h1 className="text-5xl md:text-7xl font-bold text-gray-900 dark:text-white leading-tight">
 
-                        Find Your Dream Job
-                        <br />
-                        Today
+                            Find Your Dream Job
+                            <br />
+                            Today
 
-                    </h1>
+                        </h1>
+                    </Reveal>
 
                     <p className="max-w-3xl mx-auto mt-6 text-lg text-gray-600 dark:text-gray-400 leading-8">
 
@@ -81,7 +85,7 @@ const HeroSection = () => {
                         <Input
                             variant="bordered"
                             placeholder="Job title, skill or company"
-                           
+
                             classNames={{
                                 inputWrapper:
                                     'border-none shadow-none bg-transparent',
@@ -93,7 +97,7 @@ const HeroSection = () => {
                         <Input
                             variant="bordered"
                             placeholder="Location or Remote"
-                            
+
                             classNames={{
                                 inputWrapper:
                                     'border-none shadow-none bg-transparent',
@@ -114,14 +118,15 @@ const HeroSection = () => {
 
                 {/* Trending */}
 
-                <div className="mt-8 flex flex-wrap justify-center items-center gap-3">
+                <RevealGroup className="mt-8 flex flex-wrap justify-center items-center gap-3" staggerDelay={0.08}>
 
                     <span className="text-gray-500">
                         Trending Position
                     </span>
 
                     {trendingJobs.map((job) => (
-                        <button
+                        <RevealItem
+                            direction="up"
                             key={job}
                             className="
                 rounded-full
@@ -141,10 +146,10 @@ const HeroSection = () => {
               "
                         >
                             {job}
-                        </button>
+                        </RevealItem>
                     ))}
 
-                </div>
+                </RevealGroup>
 
             </div>
         </section>

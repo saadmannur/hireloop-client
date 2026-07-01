@@ -8,6 +8,8 @@ import {
     HiOutlineStar,
 } from 'react-icons/hi2';
 import Globe from '@/assets/images/globe.png'
+import Reveal from '../motionAnimation/Reveal';
+import { RevealGroup, RevealItem } from '../motionAnimation/RevealGroup';
 
 const stats = [
     {
@@ -65,28 +67,31 @@ const PlatformStats = () => {
 
                     <div className="text-center max-w-3xl mx-auto mb-16">
 
-                        <h2 className="text-2xl lg:text-2xl font-bold text-gray-900 dark:text-white leading-tight">
-                            Assisting over
-                            <span className="text-violet-600 dark:text-violet-400">
-                                {' '}
-                                15,000{' '}
-                            </span>
-                            job seekers
-                            <br />
-                            find their dream positions.
-                        </h2>
+                        <Reveal direction="up" duration={0.6}>
+                            <h2 className="text-2xl lg:text-2xl font-bold text-gray-900 dark:text-white leading-tight">
+                                Assisting over
+                                <span className="text-violet-600 dark:text-violet-400">
+                                    {' '}
+                                    15,000{' '}
+                                </span>
+                                job seekers
+                                <br />
+                                find their dream positions.
+                            </h2>
+                        </Reveal>
 
                     </div>
 
                     {/* Cards */}
 
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                    <RevealGroup className="grid grid-cols-2 lg:grid-cols-4 gap-6" staggerDelay={0.08}>
 
                         {stats.map((item) => {
                             const Icon = item.icon;
 
                             return (
-                                <div
+                                <RevealItem
+                                    direction="up"
                                     key={item.id}
                                     className="
                   rounded-2xl
@@ -117,11 +122,11 @@ const PlatformStats = () => {
                                     <p className="mt-3 text-gray-600 dark:text-gray-400">
                                         {item.label}
                                     </p>
-                                </div>
+                                </RevealItem>
                             );
                         })}
 
-                    </div>
+                    </RevealGroup>
 
                 </div>
             </section>

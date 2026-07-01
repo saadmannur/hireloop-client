@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button, Form, Input, Label, TextField, FieldError, Description, toast } from "@heroui/react";
+import { Radio, RadioGroup } from "@heroui/react";
 import { FiEye, FiEyeOff, FiCamera, FiLoader, FiUserPlus } from "react-icons/fi";
 import { authClient } from "@/lib/auth-client";
 
@@ -45,6 +46,7 @@ export default function SignupPage() {
         const name = formData.get("name")?.toString().trim();
         const email = formData.get("email")?.toString().trim();
         const pwd = formData.get("password")?.toString();
+        const role = formData.get("role")?.toString();
 
         setIsSubmitting(true);
 
@@ -53,10 +55,11 @@ export default function SignupPage() {
             email,
             password: pwd,
             image: photoBase64 || undefined,
+            role,
             callbackURL: "/login",
         });
 
-        console.log(data)
+        // console.log(data)
 
         setIsSubmitting(false);
 
@@ -71,7 +74,7 @@ export default function SignupPage() {
             description: "Welcome aboard! Redirecting you to login...",
         });
 
-        setTimeout(() => router.push("/login"), 1200);
+        setTimeout(() => router.push("/"), 1200);
     };
 
     return (
@@ -133,6 +136,29 @@ export default function SignupPage() {
                         <Input placeholder="jane@example.com" />
                         <FieldError />
                     </TextField>
+                    
+                    {/* Role selection */}
+                    <div className="flex flex-col gap-4">
+                        <Label>Role</Label>
+                        <RadioGroup defaultValue="seeker" name="role" orientation="horizontal">
+                            <Radio value="seeker">
+                                <Radio.Content>
+                                    <Radio.Control>
+                                        <Radio.Indicator />
+                                    </Radio.Control>
+                                    Job Seeker
+                                </Radio.Content>
+                            </Radio>
+                            <Radio value="recruiter">
+                                <Radio.Content>
+                                    <Radio.Control>
+                                        <Radio.Indicator />
+                                    </Radio.Control>
+                                    Recruiter
+                                </Radio.Content>
+                            </Radio>
+                        </RadioGroup>
+                    </div>
 
                     {/* Password */}
                     <TextField

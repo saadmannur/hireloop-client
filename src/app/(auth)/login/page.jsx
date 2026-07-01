@@ -28,7 +28,7 @@ export default function LoginPage() {
         });
 
         setIsSubmitting(false);
-        console.log(data);
+        // console.log(data);
 
         if (error) {
             toast.danger("Login failed", {
@@ -41,7 +41,7 @@ export default function LoginPage() {
             description: "Logged in successfully. Redirecting...",
         });
 
-        // setTimeout(() => router.push("/"), 800);
+        setTimeout(() => router.push("/"), 800);
     };
 
     return (

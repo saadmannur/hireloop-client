@@ -6,6 +6,8 @@ import { Button } from '@heroui/react';
 import { HiOutlineMenuAlt3, HiOutlineX } from 'react-icons/hi';
 import Theming from '../theme/Theming';
 import { authClient } from '@/lib/auth-client';
+import { usePathname, useRouter } from 'next/navigation';
+import { FiLoader } from 'react-icons/fi';
 
 const navItems = [
     {
@@ -24,11 +26,22 @@ const navItems = [
 
 const Navbar = () => {
     const [open, setOpen] = useState(false);
+    const pathname = usePathname()
 
     const { data: session, isPending } = authClient.useSession()
+    const user = session?.user;
+    console.log(user)
 
-    console.log('session response', {session, isPending})
-
+    const router = useRouter()
+    const handleSignOut = async () => {
+        await authClient.signOut({
+            fetchOptions: {
+                onSuccess: () => {
+                    router.push("/login"); // redirect to login page
+                },
+            },
+        });
+    }
 
 
     return (
@@ -37,25 +50,7 @@ const Navbar = () => {
             <div className="max-w-7xl mx-auto">
 
                 <div
-                    className="
-          h-20
-          rounded-2xl
-          bg-white/90
-          dark:bg-[#111111]/90
-          backdrop-blur-xl
-          border
-          border-gray-200
-          dark:border-white/10
-          shadow-lg
-          transition-colors
-          duration-300
-          px-6
-          lg:px-8
-          flex
-          items-center
-          justify-between
-        "
-                >
+                    className=" h-20 rounded-2xl bg-white/90 dark:bg-[#111111]/90 backdrop-blur-xl border border-gray-200 dark:border-white/10 shadow-lg transition-colors  duration-300  px-6  lg:px-8 flex items-center  justify-between " >
                     {/* Logo */}
 
                     <Link href="/" className="flex items-center">
@@ -73,15 +68,7 @@ const Navbar = () => {
                             <Link
                                 key={i}
                                 href={item.href}
-                                className="
-                text-gray-600
-                dark:text-gray-300
-                hover:text-violet-600
-                dark:hover:text-violet-400
-                transition
-                font-medium
-              "
-                            >
+                                className=" text-gray-600 dark:text-gray-300 hover:text-violet-600 dark:hover:text-violet-400 transition font-medium " >
                                 {item.label}
                             </Link>
                         ))}
@@ -92,26 +79,35 @@ const Navbar = () => {
 
                         <Theming></Theming>
 
-                        <Link
-                            href="/login"
-                            className="
-                text-violet-600
-                dark:text-violet-400
-                font-semibold
-                hover:opacity-80
-              "
-                        >
-                            Sign In
-                        </Link>
+                        {
+                            isPending ? 
+                                <>
+                                    <FiLoader className="h-4 w-4 animate-spin" /> Loading...
+                                </> :
+                            user && pathname !== "/login" ?
 
-                        <Link href="/signup">
-                            <Button
-                                as={Link}
-                                className="w-full bg-violet-600 text-white rounded-xl"
-                            >
-                                Get Started
-                            </Button>
-                        </Link>
+                                <div className='flex items-center gap-2'>
+                                    <h3 className='text-violet-600'>Hi, {user?.name}</h3>
+                                    <Button onClick={handleSignOut} variant='ghost' className={'hover:bg-violet-600 hover:text-white'}>SignOut</Button>
+                                </div> :
+
+                                <div className='lg:flex items-center gap-5'>
+                                    <Link
+                                        href="/login"
+                                        className=" text-violet-600 dark:text-violet-400 font-semibold hover:opacity-80" >
+                                        Sign In
+                                    </Link>
+
+                                    <Link href="/signup">
+                                        <Button
+                                            as={Link}
+                                            className="w-full bg-violet-600 text-white rounded-xl"
+                                        >
+                                            Get Started
+                                        </Button>
+                                    </Link>
+                                </div>
+                        }
 
                     </div>
 
@@ -136,17 +132,7 @@ const Navbar = () => {
                         }`}
                 >
                     <div
-                        className="
-            rounded-2xl
-            bg-white
-            dark:bg-[#111111]
-            border
-            border-gray-200
-            dark:border-white/10
-            shadow-lg
-            p-6
-          "
-                    >
+                        className=" rounded-2xl bg-white dark:bg-[#111111] border border-gray-200 dark:border-white/10 shadow-lg p-6 ">
                         <div className="flex flex-col gap-6">
 
                             {navItems.map((item) => (
@@ -154,13 +140,7 @@ const Navbar = () => {
                                     key={item.label}
                                     href={item.href}
                                     onClick={() => setOpen(false)}
-                                    className="
-                    text-gray-600
-                    dark:text-gray-300
-                    hover:text-violet-600
-                    dark:hover:text-violet-400
-                  "
-                                >
+                                    className=" text-gray-600 dark:text-gray-300 hover:text-violet-600  dark:hover:text-violet-400  " >
                                     {item.label}
                                 </Link>
                             ))}
@@ -169,21 +149,30 @@ const Navbar = () => {
 
                                 <Theming></Theming>
 
-                                <Link
-                                    href="/login"
-                                    className="block text-violet-600 dark:text-violet-400 my-4"
-                                >
-                                    Sign In
-                                </Link>
+                                {
+                                    user && pathname !== "/login" ?
 
-                                <Link href="/signup">
-                                    <Button
-                                        as={Link}
-                                        className="w-full bg-violet-600 text-white rounded-xl"
-                                    >
-                                        Get Started
-                                    </Button>
-                                </Link>
+                                        <div>
+                                            <Button onClick={handleSignOut} variant='ghost' className={'hover:bg-violet-600 hover:text-white'}>SignOut</Button>
+                                        </div> :
+
+                                        <div className='lg:flex items-center gap-5'>
+                                            <Link
+                                                href="/login"
+                                                className=" text-violet-600 dark:text-violet-400 font-semibold  hover:opacity-80 " >
+                                                Sign In
+                                            </Link>
+
+                                            <Link href="/signup">
+                                                <Button
+                                                    as={Link}
+                                                    className="w-full bg-violet-600 text-white rounded-xl"
+                                                >
+                                                    Get Started
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                }
 
                             </div>
 
