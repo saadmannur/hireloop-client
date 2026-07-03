@@ -32,7 +32,7 @@ export default function RootLayout({ children }) {
 
         <Providers>
           <Navbar></Navbar>
-          <main>
+          <main className="container mx-auto">
             {children}
             <Toast.Provider placement="top end" />
           </main>

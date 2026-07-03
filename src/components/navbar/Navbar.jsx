@@ -30,7 +30,7 @@ const Navbar = () => {
 
     const { data: session, isPending } = authClient.useSession()
     const user = session?.user;
-    console.log(user)
+    // console.log(user)
 
     const router = useRouter()
     const handleSignOut = async () => {
@@ -45,9 +45,9 @@ const Navbar = () => {
 
 
     return (
-        <header className="absolute top-2 left-0 w-full z-50 px-4">
+        <header className="w-full">
 
-            <div className="max-w-7xl mx-auto">
+            <div className="container mx-auto">
 
                 <div
                     className=" h-20 rounded-2xl bg-white/90 dark:bg-[#111111]/90 backdrop-blur-xl border border-gray-200 dark:border-white/10 shadow-lg transition-colors  duration-300  px-6  lg:px-8 flex items-center  justify-between " >

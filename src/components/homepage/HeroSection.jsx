@@ -17,7 +17,7 @@ const trendingJobs = [
 
 const HeroSection = () => {
     return (
-        <section className="relative overflow-hidden">
+        <section className="relative overflow-hidden rounded-t-2xl">
 
             {/* Background */}
             <div className="absolute inset-0 -z-10">
