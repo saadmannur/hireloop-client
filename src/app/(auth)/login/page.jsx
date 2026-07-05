@@ -2,14 +2,17 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button, Form, Input, Label, TextField, FieldError, toast } from "@heroui/react";
 import { FiEye, FiEyeOff, FiLoader, FiLogIn } from "react-icons/fi";
 import { authClient } from "@/lib/auth-client";
 
 export default function LoginPage() {
+    const searchParams = useSearchParams()
     const router = useRouter();
+    const redirectTo = searchParams.get('redirect') || '/'
+
     const [showPassword, setShowPassword] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -24,7 +27,6 @@ export default function LoginPage() {
         const { error , data} = await authClient.signIn.email({
             email,
             password,
-            callbackURL: "/",
         });
 
         setIsSubmitting(false);
@@ -41,7 +43,7 @@ export default function LoginPage() {
             description: "Logged in successfully. Redirecting...",
         });
 
-        setTimeout(() => router.push("/"), 800);
+        setTimeout(() => router.push(redirectTo), 800);
     };
 
     return (
@@ -113,8 +115,8 @@ export default function LoginPage() {
                 </Form>
 
                 <p className="mt-6 text-center text-sm text-muted-foreground dark:text-neutral-400">
-                    Don't have an account?{" "}
-                    <Link href="/signup" className="font-medium hover:underline text-violet-600">
+                    Do not have an account?{" "}
+                    <Link href={`/signup?redirect=${redirectTo}`} className="font-medium hover:underline text-violet-600">
                         Sign up
                     </Link>
                 </p>

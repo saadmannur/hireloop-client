@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button, Form, Input, Label, TextField, FieldError, Description, toast } from "@heroui/react";
 import { Radio, RadioGroup } from "@heroui/react";
@@ -11,6 +11,8 @@ import { authClient } from "@/lib/auth-client";
 
 export default function SignupPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const redirectTo = searchParams.get('redirect') || '/' ;
 
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -48,7 +50,10 @@ export default function SignupPage() {
         const pwd = formData.get("password")?.toString();
         const role = formData.get("role")?.toString();
 
+
         setIsSubmitting(true);
+
+        const plan = role === 'seeker' ? 'seeker_free' : 'recruiter_free';
 
         const { error, data } = await authClient.signUp.email({
             name,
@@ -56,7 +61,7 @@ export default function SignupPage() {
             password: pwd,
             image: photoBase64 || undefined,
             role,
-            callbackURL: "/login",
+            plan,
         });
 
         // console.log(data)
@@ -74,7 +79,7 @@ export default function SignupPage() {
             description: "Welcome aboard! Redirecting you to login...",
         });
 
-        setTimeout(() => router.push("/"), 1200);
+        setTimeout(() => router.push(redirectTo), 1200);
     };
 
     return (
@@ -232,7 +237,7 @@ export default function SignupPage() {
 
                 <p className="mt-6 text-center text-sm text-muted-foreground dark:text-neutral-400">
                     Already have an account?{" "}
-                    <Link href="/login" className="font-medium hover:underline  text-violet-600">
+                    <Link href={`/login?redirect=${redirectTo}`} className="font-medium hover:underline  text-violet-600">
                         Log in
                     </Link>
                 </p>

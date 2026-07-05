@@ -30,14 +30,14 @@ export default function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col">
 
-        <Providers>
+        {/* <Providers> */}
           <Navbar></Navbar>
           <main className="container mx-auto">
             {children}
             <Toast.Provider placement="top end" />
           </main>
           <Footer></Footer>
-        </Providers>
+        {/* </Providers> */}
 
       </body>
     </html>
