@@ -91,6 +91,7 @@ const RecruiterCompany = ({ recruiter, recruiterCompany }) => {
                 logoUrl,
                 status: company?.status ?? 'pending',
                 recruiterId: recruiter.id,
+                recruiterEmail: recruiter.email,
             };
 
             const data = await createCompany(newCompanyData);

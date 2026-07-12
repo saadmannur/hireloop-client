@@ -55,11 +55,7 @@ const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];
 const CURRENCIES = ["USD", "EUR", "GBP", "BDT", "INR"];
 
 
-const NewJob = ({ companyA }) => {
-    const company = {
-        ...companyA, isApproved: true,
-    }
-    // console.log(company);
+const NewJob = ({ company }) => {
 
     const [isRemote, setIsRemote] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -68,7 +64,7 @@ const NewJob = ({ companyA }) => {
     async function handleSubmit(event) {
         event.preventDefault();
 
-        if (!company.isApproved) return;
+        if (company.status !== 'approved' ) return;
 
         setSubmitError(null);
         setIsSubmitting(true);
@@ -138,7 +134,7 @@ const NewJob = ({ companyA }) => {
                 </p>
             </div>
 
-            {!company.isApproved && (
+            {company.status !== 'approved' && (
                 <Alert className="mb-6" variant="danger">
                     <CircleExclamation className="h-4 w-4" />
                     Your company, {company.name}, hasn&apos;t been approved yet. You
@@ -153,237 +149,268 @@ const NewJob = ({ companyA }) => {
                 </Alert>
             )}
 
-            <Form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                {/* ---------------- Company (auto-filled, read-only) --------------- */}
-                <Fieldset
-                    className="rounded-2xl border border-black/10 bg-white p-6
-            dark:border-white/10 dark:bg-[#141414]"
-                >
-                    <Fieldset.Legend className="flex items-center gap-2 text-base font-semibold text-black dark:text-white">
-                        <House className="h-4 w-4 text-black/60 dark:text-white/60" />
-                        Company
-                    </Fieldset.Legend>
-                    <Fieldset.Group>
-                        <div className="flex items-center gap-3 rounded-xl bg-black/5 p-3 dark:bg-white/5">
-                            <Avatar className="h-10 w-10">
-                                <AvatarImage src={company.logoUrl} alt={company.name} />
-                                <AvatarFallback>{company.name?.[0]}</AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                                <p className="text-sm font-medium text-black dark:text-white">
-                                    {company.name}
-                                </p>
-                                <p className="text-xs text-black/50 dark:text-white/50">
-                                    This job will be published under your registered company.
-                                </p>
+            {
+                company.status === 'rejected' ?
+                    <div className="mt-6 rounded-xl border border-danger-200 bg-danger-50 dark:border-danger-800 dark:bg-danger-950/30 p-6">
+                        <div className="flex items-start gap-4">
+                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-danger-100 dark:bg-danger-900">
+                                <span className="text-2xl">❌</span>
                             </div>
-                            <Chip color={company.isApproved ? "success" : "danger"}>
-                                <CircleCheck className="h-3.5 w-3.5" />
-                                {company.isApproved ? "Approved" : "Pending approval"}
-                            </Chip>
-                        </div>
-                    </Fieldset.Group>
-                </Fieldset>
 
-                {/* ---------------------------- Job Info --------------------------- */}
-                <Fieldset
-                    className="rounded-2xl border border-black/10 bg-white p-6
-            dark:border-white/10 dark:bg-[#141414]"
-                >
-                    <Fieldset.Legend className="flex items-center gap-2 text-base font-semibold text-black dark:text-white">
-                        <Briefcase className="h-4 w-4 text-black/60 dark:text-white/60" />
-                        Job info
-                    </Fieldset.Legend>
+                            <div className="flex-1">
+                                <h3 className="text-lg font-semibold text-danger">
+                                    Company Rejected
+                                </h3>
 
-                    <Fieldset.Group className="gap-4">
-                        <TextField name="title" isRequired fullWidth>
-                            <Label>Job title</Label>
-                            <Input placeholder="e.g. Senior Frontend Engineer" />
-                            <FieldError />
-                        </TextField>
+                                <p className="mt-2 text-sm text-default-600">
+                                    Your company profile was not approved by the admin. Please review
+                                    your information, update the required fields, and submit it again for
+                                    approval.
+                                </p>
 
-                        <div className="grid gap-4 sm:grid-cols-2">
-                            <Select name="category" placeholder="Select a category" isRequired fullWidth>
-                                <Label>Job category</Label>
-                                <Select.Trigger>
-                                    <Select.Value />
-                                    <Select.Indicator />
-                                </Select.Trigger>
-                                <Select.Popover>
-                                    <ListBox>
-                                        {JOB_CATEGORIES.map((category) => (
-                                            <ListBox.Item key={category} id={category} textValue={category}>
-                                                {category}
-                                            </ListBox.Item>
-                                        ))}
-                                    </ListBox>
-                                </Select.Popover>
-                                <FieldError />
-                            </Select>
-
-                            <Select name="jobType" placeholder="Select a job type" isRequired fullWidth>
-                                <Label>Job type</Label>
-                                <Select.Trigger>
-                                    <Select.Value />
-                                    <Select.Indicator />
-                                </Select.Trigger>
-                                <Select.Popover>
-                                    <ListBox>
-                                        {JOB_TYPES.map((type) => (
-                                            <ListBox.Item key={type} id={type} textValue={type}>
-                                                {type}
-                                            </ListBox.Item>
-                                        ))}
-                                    </ListBox>
-                                </Select.Popover>
-                                <FieldError />
-                            </Select>
-                        </div>
-
-                        <div className="grid gap-4 sm:grid-cols-3">
-                            <TextField name="salaryMin" type="number" isRequired fullWidth>
-                                <Label className="flex items-center gap-1.5">
-                                    <Wallet className="h-3.5 w-3.5 text-black/50 dark:text-white/50" />
-                                    Min salary
-                                </Label>
-                                <Input placeholder="40000" min={0} />
-                                <FieldError />
-                            </TextField>
-
-                            <TextField name="salaryMax" type="number" isRequired fullWidth>
-                                <Label>Max salary</Label>
-                                <Input placeholder="65000" min={0} />
-                                <FieldError />
-                            </TextField>
-
-                            <Select name="currency" placeholder="Currency" defaultSelectedKey="USD" isRequired fullWidth>
-                                <Label>Currency</Label>
-                                <Select.Trigger>
-                                    <Select.Value />
-                                    <Select.Indicator />
-                                </Select.Trigger>
-                                <Select.Popover>
-                                    <ListBox>
-                                        {CURRENCIES.map((currency) => (
-                                            <ListBox.Item key={currency} id={currency} textValue={currency}>
-                                                {currency}
-                                            </ListBox.Item>
-                                        ))}
-                                    </ListBox>
-                                </Select.Popover>
-                                <FieldError />
-                            </Select>
-                        </div>
-
-                        <div className="flex items-center justify-between rounded-xl bg-black/5 p-3 dark:bg-white/5">
-                            <div className="flex items-center gap-2">
-                                <MapPin className="h-4 w-4 text-black/60 dark:text-white/60" />
-                                <div>
-                                    <p className="text-sm font-medium text-black dark:text-white">
-                                        Remote job
-                                    </p>
-                                    <p className="text-xs text-black/50 dark:text-white/50">
-                                        Turn on if this role can be done from anywhere.
+                                <div className="mt-4 rounded-lg border border-default-200 bg-content1 p-4">
+                                    <p className="text-sm text-default-600">
+                                        <span className="font-semibold text-foreground">
+                                            Next Step:
+                                        </span>{" "}
+                                        Edit your company details and resubmit your application for review.
                                     </p>
                                 </div>
                             </div>
-                            <Switch
-                                isSelected={isRemote}
-                                onChange={(e) => setIsRemote(e)}
-                                aria-label="Remote Job"
-                            >
-                                <Switch.Content>
-                                    <Switch.Control>
-                                        <Switch.Thumb />
-                                    </Switch.Control>
-                                </Switch.Content>
-                            </Switch>
                         </div>
-
-                        {!isRemote && (
-                            <div className="grid gap-4 sm:grid-cols-2">
-                                <TextField name="city" isRequired={!isRemote} fullWidth>
-                                    <Label>City</Label>
-                                    <Input placeholder="e.g. Dhaka" />
-                                    <FieldError />
-                                </TextField>
-
-                                <TextField name="country" isRequired={!isRemote} fullWidth>
-                                    <Label>Country</Label>
-                                    <Input placeholder="e.g. Bangladesh" />
-                                    <FieldError />
-                                </TextField>
-                            </div>
-                        )}
-
-                        <TextField name="applicationDeadline" type="date" isRequired fullWidth>
-                            <Label className="flex items-center gap-1.5">
-                                <Calendar className="h-3.5 w-3.5 text-black/50 dark:text-white/50" />
-                                Application deadline
-                            </Label>
-                            <Input />
-                            <FieldError />
-                        </TextField>
-                    </Fieldset.Group>
-                </Fieldset>
-
-                {/* ------------------------ Job Description ------------------------ */}
-                <Fieldset
-                    className="rounded-2xl border border-black/10 bg-white p-6
+                    </div> :
+                    <Form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                        {/* ---------------- Company (auto-filled, read-only) --------------- */}
+                        <Fieldset
+                            className="rounded-2xl border border-black/10 bg-white p-6
             dark:border-white/10 dark:bg-[#141414]"
-                >
-                    <Fieldset.Legend className="flex items-center gap-2 text-base font-semibold text-black dark:text-white">
-                        <TextAlignLeft className="h-4 w-4 text-black/60 dark:text-white/60" />
-                        Job description
-                    </Fieldset.Legend>
+                        >
+                            <Fieldset.Legend className="flex items-center gap-2 text-base font-semibold text-black dark:text-white">
+                                <House className="h-4 w-4 text-black/60 dark:text-white/60" />
+                                Company
+                            </Fieldset.Legend>
+                            <Fieldset.Group>
+                                <div className="flex items-center gap-3 rounded-xl bg-black/5 p-3 dark:bg-white/5">
+                                    <Avatar className="h-10 w-10">
+                                        <AvatarImage src={company.logoUrl} alt={company.name} />
+                                        <AvatarFallback>{company.name?.[0]}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1">
+                                        <p className="text-sm font-medium text-black dark:text-white">
+                                            {company.name}
+                                        </p>
+                                        <p className="text-xs text-black/50 dark:text-white/50">
+                                            This job will be published under your registered company.
+                                        </p>
+                                    </div>
+                                    <Chip color={company.status === 'approved' ? "success" : "danger"}>
+                                        <CircleCheck className="h-3.5 w-3.5" />
+                                        {company.status}
+                                    </Chip>
+                                </div>
+                            </Fieldset.Group>
+                        </Fieldset>
 
-                    <Fieldset.Group className="gap-4">
-                        <TextField name="responsibilities" isRequired fullWidth>
-                            <Label className="flex items-center gap-1.5">
-                                <ListCheck className="h-3.5 w-3.5 text-black/50 dark:text-white/50" />
-                                Responsibilities
-                            </Label>
-                            <TextArea
-                                rows={5}
-                                placeholder="What will this person do day to day?"
-                            />
-                            <FieldError />
-                        </TextField>
+                        {/* ---------------------------- Job Info --------------------------- */}
+                        <Fieldset
+                            className="rounded-2xl border border-black/10 bg-white p-6
+            dark:border-white/10 dark:bg-[#141414]"
+                        >
+                            <Fieldset.Legend className="flex items-center gap-2 text-base font-semibold text-black dark:text-white">
+                                <Briefcase className="h-4 w-4 text-black/60 dark:text-white/60" />
+                                Job info
+                            </Fieldset.Legend>
 
-                        <TextField name="requirements" isRequired fullWidth>
-                            <Label>Requirements</Label>
-                            <TextArea
-                                rows={5}
-                                placeholder="Skills, experience, and qualifications needed."
-                            />
-                            <FieldError />
-                        </TextField>
+                            <Fieldset.Group className="gap-4">
+                                <TextField name="title" isRequired fullWidth>
+                                    <Label>Job title</Label>
+                                    <Input placeholder="e.g. Senior Frontend Engineer" />
+                                    <FieldError />
+                                </TextField>
 
-                        <TextField name="benefits" fullWidth>
-                            <Label className="flex items-center gap-1.5">
-                                <Gift className="h-3.5 w-3.5 text-black/50 dark:text-white/50" />
-                                Benefits
-                            </Label>
-                            <TextArea rows={4} placeholder="Optional — health insurance, remote stipend, etc." />
-                            <Description>Leave blank if not applicable.</Description>
-                        </TextField>
-                    </Fieldset.Group>
-                </Fieldset>
+                                <div className="grid gap-4 sm:grid-cols-2">
+                                    <Select name="category" placeholder="Select a category" isRequired fullWidth>
+                                        <Label>Job category</Label>
+                                        <Select.Trigger>
+                                            <Select.Value />
+                                            <Select.Indicator />
+                                        </Select.Trigger>
+                                        <Select.Popover>
+                                            <ListBox>
+                                                {JOB_CATEGORIES.map((category) => (
+                                                    <ListBox.Item key={category} id={category} textValue={category}>
+                                                        {category}
+                                                    </ListBox.Item>
+                                                ))}
+                                            </ListBox>
+                                        </Select.Popover>
+                                        <FieldError />
+                                    </Select>
 
-                {/* -------------------------------- Actions ------------------------------- */}
-                <div className="flex items-center justify-end gap-3">
-                    <Button type="reset" variant="secondary" isDisabled={isSubmitting}>
-                        Reset
-                    </Button>
-                    <Button
-                        type="submit"
-                        isDisabled={!company.isApproved || isSubmitting}
-                        isPending={isSubmitting}
-                    >
-                        {isSubmitting ? "Publishing…" : "Publish job"}
-                    </Button>
-                </div>
-            </Form>
+                                    <Select name="jobType" placeholder="Select a job type" isRequired fullWidth>
+                                        <Label>Job type</Label>
+                                        <Select.Trigger>
+                                            <Select.Value />
+                                            <Select.Indicator />
+                                        </Select.Trigger>
+                                        <Select.Popover>
+                                            <ListBox>
+                                                {JOB_TYPES.map((type) => (
+                                                    <ListBox.Item key={type} id={type} textValue={type}>
+                                                        {type}
+                                                    </ListBox.Item>
+                                                ))}
+                                            </ListBox>
+                                        </Select.Popover>
+                                        <FieldError />
+                                    </Select>
+                                </div>
+
+                                <div className="grid gap-4 sm:grid-cols-3">
+                                    <TextField name="salaryMin" type="number" isRequired fullWidth>
+                                        <Label className="flex items-center gap-1.5">
+                                            <Wallet className="h-3.5 w-3.5 text-black/50 dark:text-white/50" />
+                                            Min salary
+                                        </Label>
+                                        <Input placeholder="40000" min={0} />
+                                        <FieldError />
+                                    </TextField>
+
+                                    <TextField name="salaryMax" type="number" isRequired fullWidth>
+                                        <Label>Max salary</Label>
+                                        <Input placeholder="65000" min={0} />
+                                        <FieldError />
+                                    </TextField>
+
+                                    <Select name="currency" placeholder="Currency" defaultSelectedKey="USD" isRequired fullWidth>
+                                        <Label>Currency</Label>
+                                        <Select.Trigger>
+                                            <Select.Value />
+                                            <Select.Indicator />
+                                        </Select.Trigger>
+                                        <Select.Popover>
+                                            <ListBox>
+                                                {CURRENCIES.map((currency) => (
+                                                    <ListBox.Item key={currency} id={currency} textValue={currency}>
+                                                        {currency}
+                                                    </ListBox.Item>
+                                                ))}
+                                            </ListBox>
+                                        </Select.Popover>
+                                        <FieldError />
+                                    </Select>
+                                </div>
+
+                                <div className="flex items-center justify-between rounded-xl bg-black/5 p-3 dark:bg-white/5">
+                                    <div className="flex items-center gap-2">
+                                        <MapPin className="h-4 w-4 text-black/60 dark:text-white/60" />
+                                        <div>
+                                            <p className="text-sm font-medium text-black dark:text-white">
+                                                Remote job
+                                            </p>
+                                            <p className="text-xs text-black/50 dark:text-white/50">
+                                                Turn on if this role can be done from anywhere.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <Switch
+                                        isSelected={isRemote}
+                                        onChange={(e) => setIsRemote(e)}
+                                        aria-label="Remote Job"
+                                    >
+                                        <Switch.Content>
+                                            <Switch.Control>
+                                                <Switch.Thumb />
+                                            </Switch.Control>
+                                        </Switch.Content>
+                                    </Switch>
+                                </div>
+
+                                {!isRemote && (
+                                    <div className="grid gap-4 sm:grid-cols-2">
+                                        <TextField name="city" isRequired={!isRemote} fullWidth>
+                                            <Label>City</Label>
+                                            <Input placeholder="e.g. Dhaka" />
+                                            <FieldError />
+                                        </TextField>
+
+                                        <TextField name="country" isRequired={!isRemote} fullWidth>
+                                            <Label>Country</Label>
+                                            <Input placeholder="e.g. Bangladesh" />
+                                            <FieldError />
+                                        </TextField>
+                                    </div>
+                                )}
+
+                                <TextField name="applicationDeadline" type="date" isRequired fullWidth>
+                                    <Label className="flex items-center gap-1.5">
+                                        <Calendar className="h-3.5 w-3.5 text-black/50 dark:text-white/50" />
+                                        Application deadline
+                                    </Label>
+                                    <Input />
+                                    <FieldError />
+                                </TextField>
+                            </Fieldset.Group>
+                        </Fieldset>
+
+                        {/* ------------------------ Job Description ------------------------ */}
+                        <Fieldset
+                            className="rounded-2xl border border-black/10 bg-white p-6
+            dark:border-white/10 dark:bg-[#141414]"
+                        >
+                            <Fieldset.Legend className="flex items-center gap-2 text-base font-semibold text-black dark:text-white">
+                                <TextAlignLeft className="h-4 w-4 text-black/60 dark:text-white/60" />
+                                Job description
+                            </Fieldset.Legend>
+
+                            <Fieldset.Group className="gap-4">
+                                <TextField name="responsibilities" isRequired fullWidth>
+                                    <Label className="flex items-center gap-1.5">
+                                        <ListCheck className="h-3.5 w-3.5 text-black/50 dark:text-white/50" />
+                                        Responsibilities
+                                    </Label>
+                                    <TextArea
+                                        rows={5}
+                                        placeholder="What will this person do day to day?"
+                                    />
+                                    <FieldError />
+                                </TextField>
+
+                                <TextField name="requirements" isRequired fullWidth>
+                                    <Label>Requirements</Label>
+                                    <TextArea
+                                        rows={5}
+                                        placeholder="Skills, experience, and qualifications needed."
+                                    />
+                                    <FieldError />
+                                </TextField>
+
+                                <TextField name="benefits" fullWidth>
+                                    <Label className="flex items-center gap-1.5">
+                                        <Gift className="h-3.5 w-3.5 text-black/50 dark:text-white/50" />
+                                        Benefits
+                                    </Label>
+                                    <TextArea rows={4} placeholder="Optional — health insurance, remote stipend, etc." />
+                                    <Description>Leave blank if not applicable.</Description>
+                                </TextField>
+                            </Fieldset.Group>
+                        </Fieldset>
+
+                        {/* -------------------------------- Actions ------------------------------- */}
+                        <div className="flex items-center justify-end gap-3">
+                            <Button type="reset" variant="secondary" isDisabled={isSubmitting}>
+                                Reset
+                            </Button>
+                            <Button
+                                type="submit"
+                                isDisabled={company.status === 'pending' || isSubmitting}
+                                isPending={isSubmitting}
+                            >
+                                {isSubmitting ? "Publishing…" : "Publish job"}
+                            </Button>
+                        </div>
+                    </Form>
+            }
         </div>
     );
 };

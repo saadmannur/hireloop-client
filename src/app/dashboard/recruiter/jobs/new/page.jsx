@@ -15,7 +15,7 @@ const NewJobPage = async () => {
 
     return (
         <div>
-            <NewJob companyA={company}></NewJob>
+            <NewJob company={company}></NewJob>
         </div>
     );
 };

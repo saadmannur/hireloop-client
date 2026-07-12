@@ -50,6 +50,7 @@ const ApplyForm = ({ job, user }) => {
             const payload = new FormData();
             payload.append("jobId", job._id);
             payload.append("jobName", job.title);
+            payload.append("status", "applied");
             payload.append("companyName", job.companyName);
             payload.append("userId", user?.id || "");
             payload.append("userName", user?.name || "");
@@ -58,7 +59,7 @@ const ApplyForm = ({ job, user }) => {
             payload.append("resume", resumeFile);
 
             const applicationInfo = Object.fromEntries(payload.entries());
-            console.log(applicationInfo);
+            // console.log(applicationInfo);
 
             const data = await submitApplication(applicationInfo)
             // console.log(data)

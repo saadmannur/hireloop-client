@@ -9,20 +9,6 @@ import { authClient } from '@/lib/auth-client';
 import { usePathname, useRouter } from 'next/navigation';
 import { FiLoader } from 'react-icons/fi';
 
-const navItems = [
-    {
-        label: 'Browse Jobs',
-        href: '/jobs',
-    },
-    {
-        label: 'Companies',
-        href: '/companies',
-    },
-    {
-        label: 'Pricing',
-        href: '/pricing',
-    },
-];
 
 const Navbar = () => {
     const [open, setOpen] = useState(false);
@@ -31,6 +17,36 @@ const Navbar = () => {
     const { data: session, isPending } = authClient.useSession()
     const user = session?.user;
     // console.log(user)
+
+    const navItems = [
+        {
+            label: 'Browse Jobs',
+            href: '/jobs',
+        },
+        {
+            label: 'Companies',
+            href: '/companies',
+        },
+        {
+            label: 'Pricing',
+            href: '/pricing',
+        },
+    ];
+
+    const dashboardLinks = {
+        seeker: '/dashboard/seeker',
+        recruiter: '/dashboard/recruiter',
+        admin: '/dashboard/admin'
+    }
+
+    if(user?.email){
+        navItems.push(
+            {
+                label: 'Dashboard',
+                href: dashboardLinks[user?.role || "seeker"]
+            }
+        )
+    }
 
     const router = useRouter()
     const handleSignOut = async () => {
