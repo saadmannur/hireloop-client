@@ -11,22 +11,7 @@ const Theming = () => {
                 onClick={() =>
                     setTheme(theme === 'dark' ? 'light' : 'dark')
                 }
-                className="
-                            h-10
-                            w-10
-                            rounded-lg
-                            flex
-                            items-center
-                            justify-center
-                            bg-gray-100
-                            dark:bg-white/5
-                            hover:bg-violet-600
-                            hover:text-white
-                            transition
-                            text-gray-700
-                            dark:text-gray-300
-                          "
-            >
+                className="h-10 w-10 rounded-lg flex items-center justify-center bg-gray-100 dark:bg-white/5  hover:bg-violet-600 hover:text-white transition text-gray-700 dark:text-gray-300 ">
                 {theme === 'dark' ? (
                     <FiSun size={18} />
                 ) : (
