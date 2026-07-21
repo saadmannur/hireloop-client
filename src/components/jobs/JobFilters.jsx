@@ -35,7 +35,9 @@ const JobFilters = () => {
             } else {
                 params.delete(key);
             }
+            params.delete("page"); 
             router.push(`${pathname}?${params.toString()}`);
+            // console.log(key, value);
         },
         [router, pathname, searchParams]
     );

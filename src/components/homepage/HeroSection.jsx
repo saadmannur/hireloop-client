@@ -86,7 +86,7 @@ const HeroSection = () => {
                             variant="bordered"
                             placeholder="Job title, skill or company"
 
-                            classNames={{
+                            className={{
                                 inputWrapper:
                                     'border-none shadow-none bg-transparent',
                             }}
@@ -98,7 +98,7 @@ const HeroSection = () => {
                             variant="bordered"
                             placeholder="Location or Remote"
 
-                            classNames={{
+                            className={{
                                 inputWrapper:
                                     'border-none shadow-none bg-transparent',
                             }}

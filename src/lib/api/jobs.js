@@ -10,6 +10,7 @@ export const getJobs = async (filters = {}) => {
     if (filters.jobType) params.set('jobType', filters.jobType);
     if (filters.category) params.set('category', filters.category);
     if (filters.search) params.set('search', filters.search);
+    if (filters.page) params.set('page', filters.page);
     if (filters.companyId) params.set('companyId', filters.companyId);
 
     const res = await fetch(`${baseurl}/api/jobs?${params.toString()}`, {
